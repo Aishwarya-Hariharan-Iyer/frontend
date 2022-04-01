@@ -185,7 +185,10 @@ const config = {
     AwardsHall,
     RoomPreview,
     Bindings
-  ]
+  ],
+  dom: {
+    createContainer: true
+  }
 };
 
 export const createSourceAcademyGame = () => {

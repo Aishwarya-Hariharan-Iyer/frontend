@@ -163,6 +163,21 @@ class MainMenu extends Phaser.Scene {
           this.getLayerManager().clearAllLayers();
           this.scene.start('Bindings');
         }
+      },
+      {
+        text: 'Enter Matrix',
+        callback: () => {
+          // const element = this.add.dom(960, 540).createFromHTML(
+          this.add
+            .dom(960, 540)
+            .createFromHTML(
+              '<iframe src="http://localhost:8000" style="width: 1920px; height: 1080px" />'
+            );
+          // element.addListener('click');
+          // element.on('click', function (event: any) {
+          //   element.destroy();
+          // })
+        }
       }
     ];
   }
