@@ -6,11 +6,13 @@ import GameBackgroundManager from '../../background/GameBackgroundManager';
 import GameBBoxManager from '../../boundingBoxes/GameBoundingBoxManager';
 import { GameCheckpoint } from '../../chapter/GameChapterTypes';
 import GameCharacterManager from '../../character/GameCharacterManager';
+import CommonBackButton from '../../commons/CommonBackButton';
 import { Constants } from '../../commons/CommonConstants';
 import { AssetKey } from '../../commons/CommonTypes';
 import GameDialogueManager from '../../dialogue/GameDialogueManager';
 import { blackFade, blackScreen, fadeIn } from '../../effects/FadeEffect';
 import { addLoadingScreen } from '../../effects/LoadingScreen';
+import { displayMiniMessage } from '../../effects/MiniMessage';
 import GameEscapeManager from '../../escape/GameEscapeManager';
 import GameInputManager from '../../input/GameInputManager';
 import GameLayerManager from '../../layer/GameLayerManager';
@@ -248,6 +250,33 @@ class GameManager extends Phaser.Scene {
         } else {
           await this.getPhaseManager().pushPhase(GamePhaseType.AwardMenu);
         }
+      }
+    );
+    this.getInputManager().registerKeyboardListener(
+      Phaser.Input.Keyboard.KeyCodes.CTRL,
+      'up',
+      async () => {
+        const domElement = this.add
+          .dom(960, 580)
+          .createFromHTML(
+            '<iframe src="http://localhost:8000/playground" id="phaserIFrame" style="width: 1920px; height: 1000px" />'
+          );
+
+        const blackUnderlay = blackScreen(this);
+        const backButton = new CommonBackButton(this, () => {
+          // Find player's display output and display it in a mini message
+          const iFrame = domElement.getChildByID('phaserIFrame') as any;
+          const logOutput = iFrame.contentDocument.getElementsByClassName('logOutput')[0];
+          if (logOutput && logOutput.textContent) {
+            displayMiniMessage(this, logOutput.textContent);
+          }
+
+          domElement.destroy();
+          blackUnderlay.destroy();
+          backButton.destroy();
+        });
+        this.getLayerManager().addToLayer(Layer.UI, blackUnderlay);
+        this.getLayerManager().addToLayer(Layer.UI, backButton);
       }
     );
   }
